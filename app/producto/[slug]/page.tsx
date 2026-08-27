@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Link from "next/link";
 
 type Producto = {
@@ -33,57 +29,49 @@ const API_URL =
 const DECLARACION =
   "El equipo previamente individualizado cumple con las disposiciones establecidas en la Norma Técnica de Equipos de alcance reducido, aprobada por la resolución exenta N° 1.985, de 2017, de la Subsecretaría de Telecomunicaciones.";
 
-export default function ProductoPage() {
-  const params = useParams();
-  const slug = String(params.slug || "");
+async function obtenerProductos(): Promise<Producto[]> {
+  const response = await fetch(API_URL, {
+    next: {
+      revalidate: 300,
+    },
+  });
 
-  const [producto, setProducto] = useState<Producto | null>(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function cargarProducto() {
-      try {
-        const response = await fetch(API_URL);
-
-        if (!response.ok) {
-          throw new Error("No se pudo consultar la información.");
-        }
-
-        const data = await response.json();
-
-        const encontrado = (data.productos || []).find(
-          (item: Producto) =>
-            String(item.slug).toLowerCase() === slug.toLowerCase()
-        );
-
-        if (!encontrado) {
-          setError("No encontramos el equipo solicitado.");
-          return;
-        }
-
-        setProducto(encontrado);
-      } catch {
-        setError("No pudimos cargar la información del equipo.");
-      } finally {
-        setCargando(false);
-      }
-    }
-
-    cargarProducto();
-  }, [slug]);
-
-  if (cargando) {
-    return (
-      <main className="productPage">
-        <p className="status">Cargando información...</p>
-      </main>
-    );
+  if (!response.ok) {
+    throw new Error("No se pudo consultar la información.");
   }
 
-  if (error || !producto) {
+  const data = await response.json();
+
+  return data.productos || [];
+}
+
+export default async function ProductoPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+
+  let producto: Producto | undefined;
+
+  try {
+    const productos = await obtenerProductos();
+
+    producto = productos.find(
+      (item) => String(item.slug).toLowerCase() === slug.toLowerCase()
+    );
+  } catch {
+    producto = undefined;
+  }
+
+  if (!producto) {
     return (
       <main className="productPage">
+        <header className="header">
+          <div className="brand">ORILAT</div>
+          <div className="country">CHILE</div>
+        </header>
+
         <div className="productWrapper">
           <Link href="/" className="backLink">
             ← Volver al buscador
@@ -91,7 +79,7 @@ export default function ProductoPage() {
 
           <div className="empty">
             <h1>Equipo no encontrado</h1>
-            <p>{error}</p>
+            <p>No pudimos encontrar la información del equipo solicitado.</p>
           </div>
         </div>
       </main>
