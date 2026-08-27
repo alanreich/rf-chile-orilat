@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-
 type Producto = {
   codigo: string;
   nombre: string;
@@ -28,59 +24,61 @@ type Producto = {
 const API_URL =
   "https://script.google.com/macros/s/AKfycbxkBc2B7i38YNBITxWXlSzelgsl5rIicd_NlxIw99eArSMrd2is3ENIt-AzgDf7RAg1/exec";
 
-export default function Home() {
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [busqueda, setBusqueda] = useState("");
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState("");
+async function obtenerProductos(): Promise<Producto[]> {
+  const response = await fetch(API_URL, {
+    next: {
+      revalidate: 300,
+    },
+  });
 
-  useEffect(() => {
-    async function cargarProductos() {
-      try {
-        const response = await fetch(API_URL);
+  if (!response.ok) {
+    throw new Error("No se pudo consultar la información.");
+  }
 
-        if (!response.ok) {
-          throw new Error("No se pudo consultar la información.");
-        }
+  const data = await response.json();
 
-        const data = await response.json();
-        setProductos(data.productos || []);
-      } catch {
-        setError(
-          "No pudimos cargar la información. Por favor, intentá nuevamente."
-        );
-      } finally {
-        setCargando(false);
-      }
-    }
+  return data.productos || [];
+}
 
-    cargarProductos();
-  }, []);
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  let productos: Producto[] = [];
+  let error = "";
 
-  const resultados = useMemo(() => {
-    const texto = busqueda.trim().toLowerCase();
+  try {
+    productos = await obtenerProductos();
+  } catch {
+    error =
+      "No pudimos cargar la información. Por favor, intentá nuevamente.";
+  }
 
-    if (!texto) return [];
+  const params = await searchParams;
+  const busqueda = (params.q || "").trim();
+  const texto = busqueda.toLowerCase();
 
-    return productos.filter((producto) => {
-      const contenido = [
-        producto.codigo,
-        producto.nombre,
-        producto.marca,
-        producto.modelo,
-        producto.tipo_equipo,
-        producto.tecnologia_modulacion,
-        producto.bandas_frecuencia,
-        producto.pire,
-        producto.modulos,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
+  const resultados = texto
+    ? productos.filter((producto) => {
+        const contenido = [
+          producto.codigo,
+          producto.nombre,
+          producto.marca,
+          producto.modelo,
+          producto.tipo_equipo,
+          producto.tecnologia_modulacion,
+          producto.bandas_frecuencia,
+          producto.pire,
+          producto.modulos,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
 
-      return contenido.includes(texto);
-    });
-  }, [busqueda, productos]);
+        return contenido.includes(texto);
+      })
+    : [];
 
   return (
     <main className="container">
@@ -99,17 +97,17 @@ export default function Home() {
           técnicas para consultar su información y documentación.
         </p>
 
-        <div className="searchBox">
+        <form className="searchBox" method="GET">
           <span className="searchIcon">⌕</span>
 
           <input
             type="search"
+            name="q"
             placeholder="Ej: RF-001"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
+            defaultValue={busqueda}
             aria-label="Buscar equipo"
           />
-        </div>
+        </form>
 
         <p className="help">
           Podés ingresar el modelo completo o solamente una parte.
@@ -117,11 +115,9 @@ export default function Home() {
       </section>
 
       <section className="results">
-        {cargando && <p className="status">Cargando equipos...</p>}
-
         {error && <p className="error">{error}</p>}
 
-        {!cargando && !error && busqueda && resultados.length === 0 && (
+        {!error && busqueda && resultados.length === 0 && (
           <div className="empty">
             <h2>No encontramos ese equipo</h2>
             <p>
