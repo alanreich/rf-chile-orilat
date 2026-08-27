@@ -99,30 +99,30 @@ export default async function ProductoPage({
         </Link>
 
         <section className="productHeader">
-          <p className="eyebrow">{producto.tipo_equipo}</p>
+          <p className="eyebrow">EQUIPO DE RADIOFRECUENCIA</p>
 
           <h1>{producto.nombre}</h1>
 
           <div className="productIdentity">
             <span>
               <strong>Marca</strong>
-              {producto.marca}
+              {producto.marca || "-"}
             </span>
 
             <span>
               <strong>Modelo</strong>
-              {producto.modelo}
+              {producto.modelo || "-"}
             </span>
 
             <span>
               <strong>Código</strong>
-              {producto.codigo}
+              {producto.codigo || "-"}
             </span>
           </div>
         </section>
 
         <section className="infoSection">
-          <h2>Información del equipo</h2>
+          <h2>A. Información Comercial</h2>
 
           <div className="infoCard">
             <div className="infoRow">
@@ -131,23 +131,17 @@ export default async function ProductoPage({
             </div>
 
             <div className="infoRow">
-              <span>Nombre comercial</span>
-              <strong>{producto.nombre}</strong>
+              <span>Nombre comercial del equipo</span>
+              <strong>{producto.nombre || "-"}</strong>
             </div>
 
             <div className="infoRow">
               <span>Fabricante</span>
               <strong>{producto.fabricante || "-"}</strong>
             </div>
-          </div>
-        </section>
 
-        <section className="infoSection">
-          <h2>Importador o representante en Chile</h2>
-
-          <div className="infoCard">
             <div className="infoRow">
-              <span>Importador</span>
+              <span>Importador o representante en Chile</span>
               <strong>{producto.importador || "-"}</strong>
             </div>
 
@@ -157,7 +151,7 @@ export default async function ProductoPage({
             </div>
 
             <div className="infoRow">
-              <span>Correo electrónico</span>
+              <span>Correo electrónico de contacto</span>
               <strong>{producto.email_importador || "-"}</strong>
             </div>
 
@@ -169,21 +163,36 @@ export default async function ProductoPage({
         </section>
 
         <section className="infoSection">
-          <h2>Características técnicas</h2>
+          <h2>B. Características Técnicas</h2>
 
           <div className="infoCard">
             <div className="infoRow">
-              <span>Tecnología / Modulación</span>
+              <span>Tipo de equipo</span>
+              <strong>{producto.tipo_equipo || "-"}</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>Marca</span>
+              <strong>{producto.marca || "-"}</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>Modelo</span>
+              <strong>{producto.modelo || "-"}</strong>
+            </div>
+
+            <div className="infoRow">
+              <span>Tecnología o modulación</span>
               <strong>{producto.tecnologia_modulacion || "-"}</strong>
             </div>
 
             <div className="infoRow">
-              <span>Banda(s) de frecuencia</span>
+              <span>Frecuencia(s)</span>
               <strong>{producto.bandas_frecuencia || "-"}</strong>
             </div>
 
             <div className="infoRow">
-              <span>Ganancia de antena</span>
+              <span>Ganancia de antena (dBi)</span>
               <strong>{producto.ganancia_antena || "-"}</strong>
             </div>
 
@@ -200,15 +209,7 @@ export default async function ProductoPage({
         </section>
 
         <section className="infoSection">
-          <h2>Declaración de conformidad</h2>
-
-          <div className="declaration">
-            <p>{DECLARACION}</p>
-          </div>
-        </section>
-
-        <section className="infoSection">
-          <h2>Informe de ensayo de radiofrecuencia</h2>
+          <h2>Informe de Ensayo (Test Report)</h2>
 
           <div className="reportCard">
             {producto.test_report_url && producto.test_report_nombre ? (
@@ -223,6 +224,14 @@ export default async function ProductoPage({
             ) : (
               <span>-</span>
             )}
+          </div>
+        </section>
+
+        <section className="infoSection">
+          <h2>C. Declaración de Conformidad</h2>
+
+          <div className="declaration">
+            <p>{DECLARACION}</p>
           </div>
         </section>
       </div>
