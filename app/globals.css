@@ -85,6 +85,21 @@ input {
   font: inherit;
 }
 
+::selection {
+  background: rgba(41, 79, 115, 0.16);
+}
+
+
+/* =========================================================
+   GLOBAL PAGE HEIGHT
+   ========================================================= */
+
+.container,
+.productPage {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
 
 /* =========================================================
    HEADER
@@ -101,7 +116,7 @@ input {
   align-items: center;
   justify-content: space-between;
 
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.97);
 
   border-top: 3px solid #253f5a;
   border-bottom: 1px solid var(--line);
@@ -149,8 +164,6 @@ input {
    ========================================================= */
 
 .container {
-  min-height: 100vh;
-
   display: flex;
   flex-direction: column;
 
@@ -167,8 +180,7 @@ input {
   width: min(760px, calc(100% - 40px));
 
   margin: 0 auto;
-
-  padding-top: 84px;
+  padding-top: 82px;
 
   text-align: center;
 }
@@ -235,7 +247,8 @@ input {
 
   transition:
     border-color 160ms ease,
-    box-shadow 160ms ease;
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .searchBox:focus-within {
@@ -244,6 +257,8 @@ input {
   box-shadow:
     0 0 0 4px rgba(41, 79, 115, 0.08),
     var(--shadow-card);
+
+  transform: translateY(-1px);
 }
 
 .searchIcon {
@@ -266,11 +281,7 @@ input {
   width: 100%;
   height: 100%;
 
-  padding:
-    0
-    20px
-    0
-    50px;
+  padding: 0 20px 0 50px;
 
   color: var(--text);
   background: transparent;
@@ -312,10 +323,7 @@ input {
 .results {
   width: min(760px, calc(100% - 40px));
 
-  margin:
-    28px
-    auto
-    64px;
+  margin: 28px auto 64px;
 
   display: flex;
   flex-direction: column;
@@ -399,6 +407,7 @@ input {
 
 .productInfo span {
   display: inline-flex;
+  align-items: baseline;
   gap: 4px;
 }
 
@@ -410,10 +419,10 @@ input {
 .button {
   flex: 0 0 auto;
 
-  min-width: 130px;
-  height: 38px;
+  min-width: 132px;
+  height: 40px;
 
-  padding: 0 15px;
+  padding: 0 16px;
 
   display: inline-flex;
   align-items: center;
@@ -432,13 +441,16 @@ input {
   transition:
     color 150ms ease,
     background 150ms ease,
-    border-color 150ms ease;
+    border-color 150ms ease,
+    transform 150ms ease;
 }
 
 .button:hover {
   color: #ffffff;
   background: var(--accent);
   border-color: var(--accent);
+
+  transform: translateY(-1px);
 }
 
 
@@ -505,7 +517,8 @@ input {
    ========================================================= */
 
 .productPage {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 
   background:
     linear-gradient(
@@ -520,10 +533,9 @@ input {
 
   margin: 0 auto;
 
-  padding:
-    48px
-    0
-    76px;
+  padding: 48px 0 76px;
+
+  flex: 1;
 }
 
 .backLink {
@@ -594,12 +606,16 @@ input {
   flex-direction: column;
   gap: 4px;
 
+  color: #405069;
   background: var(--surface);
 
   border: 1px solid var(--line);
   border-radius: 12px;
 
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.025);
+
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .productIdentity strong {
@@ -612,13 +628,6 @@ input {
 
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.productIdentity > span {
-  color: #405069;
-
-  font-size: 13px;
-  font-weight: 650;
 }
 
 
@@ -729,7 +738,7 @@ input {
 .reportFileLink {
   min-height: 70px;
 
-  padding: 0 22px;
+  padding: 0 56px 0 22px;
 
   display: flex;
   align-items: center;
@@ -757,6 +766,8 @@ input {
   height: 25px;
 
   margin-right: 14px;
+
+  flex: 0 0 auto;
 
   display: inline-flex;
   align-items: center;
@@ -797,8 +808,7 @@ input {
 .reportFileLink:hover::after {
   color: var(--accent);
 
-  transform:
-    translate(2px, -2px);
+  transform: translate(2px, -2px);
 }
 
 
@@ -894,8 +904,11 @@ input:focus-visible {
 
   .header {
     height: 64px;
-
     padding-inline: 20px;
+  }
+
+  .header::after {
+    width: 54px;
   }
 
   .brand {
@@ -908,40 +921,60 @@ input:focus-visible {
 
   .hero {
     width: calc(100% - 32px);
+    padding-top: 46px;
+  }
 
-    padding-top: 48px;
+  .eyebrow {
+    margin-bottom: 10px;
+    font-size: 10px;
   }
 
   .hero h1 {
     font-size: 38px;
+    line-height: 1.05;
   }
 
   .intro {
     margin-top: 16px;
 
     font-size: 14px;
+    line-height: 1.6;
   }
 
   .searchBox {
     height: 56px;
-
     margin-top: 27px;
   }
 
+  /* Evita zoom automático en Safari/iPhone */
+  .searchBox input[type="search"] {
+    font-size: 16px;
+  }
+
   .help {
+    margin-top: 10px;
+
     font-size: 11px;
+    line-height: 1.45;
   }
 
   .results {
     width: calc(100% - 32px);
 
     margin-top: 22px;
+    margin-bottom: 48px;
+
+    gap: 10px;
   }
 
   .productCard {
     padding: 18px;
 
     display: block;
+  }
+
+  .tag {
+    margin-bottom: 6px;
   }
 
   .productCard h2 {
@@ -957,6 +990,7 @@ input:focus-visible {
 
   .button {
     width: 100%;
+    height: 44px;
 
     margin-top: 15px;
   }
@@ -980,11 +1014,14 @@ input:focus-visible {
 
   .productHeader h1 {
     font-size: 34px;
+    line-height: 1.08;
   }
 
   .productIdentity {
     display: grid;
     grid-template-columns: 1fr 1fr;
+
+    gap: 9px;
   }
 
   .productIdentity > span {
@@ -1019,6 +1056,7 @@ input:focus-visible {
     display: block;
 
     font-size: 13px;
+    line-height: 1.5;
   }
 
   .reportFileLink {
@@ -1026,13 +1064,19 @@ input:focus-visible {
 
     padding:
       0
-      48px
+      46px
       0
       18px;
+
+    font-size: 13px;
   }
 
   .reportFileLink::before {
     display: none;
+  }
+
+  .reportFileLink::after {
+    right: 18px;
   }
 
   .declaration {
@@ -1045,6 +1089,17 @@ input:focus-visible {
 
   .declaration p {
     font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .container > footer,
+  .productPage > footer {
+    padding:
+      22px
+      18px;
+
+    font-size: 10px;
+    line-height: 1.5;
   }
 }
 
