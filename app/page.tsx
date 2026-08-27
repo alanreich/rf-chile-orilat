@@ -1,3 +1,5 @@
+import BuscadorProductos from "./BuscadorProductos";
+
 type Producto = {
   codigo: string;
   nombre: string;
@@ -40,11 +42,7 @@ async function obtenerProductos(): Promise<Producto[]> {
   return data.productos || [];
 }
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ q?: string }>;
-}) {
+export default async function Home() {
   let productos: Producto[] = [];
   let error = "";
 
@@ -55,31 +53,6 @@ export default async function Home({
       "No pudimos cargar la información. Por favor, intentá nuevamente.";
   }
 
-  const params = await searchParams;
-  const busqueda = (params.q || "").trim();
-  const texto = busqueda.toLowerCase();
-
-  const resultados = texto
-    ? productos.filter((producto) => {
-        const contenido = [
-          producto.codigo,
-          producto.nombre,
-          producto.marca,
-          producto.modelo,
-          producto.tipo_equipo,
-          producto.tecnologia_modulacion,
-          producto.bandas_frecuencia,
-          producto.pire,
-          producto.modulos,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-
-        return contenido.includes(texto);
-      })
-    : [];
-
   return (
     <main className="container">
       <header className="header">
@@ -87,77 +60,20 @@ export default async function Home({
         <div className="country">CHILE</div>
       </header>
 
-      <section className="hero">
-        <p className="eyebrow">RADIOFRECUENCIA</p>
+      {error ? (
+        <>
+          <section className="hero">
+            <p className="eyebrow">RADIOFRECUENCIA</p>
+            <h1>Consulta de equipos</h1>
+          </section>
 
-        <h1>Consulta de equipos</h1>
-
-        <p className="intro">
-          Buscá un equipo por nombre, marca, modelo, tipo o características
-          técnicas para consultar su información y documentación.
-        </p>
-
-        <form className="searchBox" method="GET">
-          <span className="searchIcon">⌕</span>
-
-          <input
-            type="search"
-            name="q"
-            placeholder="Ej: RF-001"
-            defaultValue={busqueda}
-            aria-label="Buscar equipo"
-          />
-        </form>
-
-        <p className="help">
-          Podés ingresar el modelo completo o solamente una parte.
-        </p>
-      </section>
-
-      <section className="results">
-        {error && <p className="error">{error}</p>}
-
-        {!error && busqueda && resultados.length === 0 && (
-          <div className="empty">
-            <h2>No encontramos ese equipo</h2>
-            <p>
-              Verificá el dato ingresado o intentá buscar por nombre, marca,
-              modelo o característica técnica.
-            </p>
-          </div>
-        )}
-
-        {resultados.map((producto) => (
-          <article className="productCard" key={producto.codigo}>
-            <div>
-              <span className="tag">{producto.tipo_equipo}</span>
-
-              <h2>{producto.nombre}</h2>
-
-              <div className="productInfo">
-                <span>
-                  <strong>Marca:</strong> {producto.marca}
-                </span>
-
-                <span>
-                  <strong>Modelo:</strong> {producto.modelo}
-                </span>
-
-                <span>
-                  <strong>Código:</strong> {producto.codigo}
-                </span>
-              </div>
-            </div>
-
-            <a
-              className="button"
-              href={`/producto/${encodeURIComponent(producto.slug)}`}
-            >
-              Ver información
-            </a>
-          </article>
-        ))}
-      </section>
+          <section className="results">
+            <p className="error">{error}</p>
+          </section>
+        </>
+      ) : (
+        <BuscadorProductos productos={productos} />
+      )}
 
       <footer>
         Información técnica y documentación de equipos de radiofrecuencia
