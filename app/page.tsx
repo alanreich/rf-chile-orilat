@@ -14,11 +14,10 @@ type Producto = {
   email_importador: string;
   web_importador: string;
   tecnologia_modulacion: string;
-  frecuencia: string;
+  bandas_frecuencia: string;
   ganancia_antena: string;
   pire: string;
   modulos: string;
-  declaracion_conformidad: string;
   test_report_nombre: string;
   test_report_url: string;
   fecha_publicacion: string;
@@ -70,7 +69,12 @@ export default function Home() {
         producto.marca,
         producto.modelo,
         producto.tipo_equipo,
+        producto.tecnologia_modulacion,
+        producto.bandas_frecuencia,
+        producto.pire,
+        producto.modulos,
       ]
+        .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
@@ -91,8 +95,8 @@ export default function Home() {
         <h1>Consulta de equipos</h1>
 
         <p className="intro">
-          Buscá un producto por modelo, marca, nombre o código para consultar
-          su información técnica y documentación de conformidad.
+          Buscá un equipo por nombre, marca, modelo, tipo o características
+          técnicas para consultar su información y documentación.
         </p>
 
         <div className="searchBox">
@@ -103,7 +107,7 @@ export default function Home() {
             placeholder="Ej: RF-001"
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
-            aria-label="Buscar producto"
+            aria-label="Buscar equipo"
           />
         </div>
 
@@ -113,14 +117,17 @@ export default function Home() {
       </section>
 
       <section className="results">
-        {cargando && <p className="status">Cargando productos...</p>}
+        {cargando && <p className="status">Cargando equipos...</p>}
 
         {error && <p className="error">{error}</p>}
 
         {!cargando && !error && busqueda && resultados.length === 0 && (
           <div className="empty">
             <h2>No encontramos ese equipo</h2>
-            <p>Verificá el modelo o intentá buscar por marca o código.</p>
+            <p>
+              Verificá el dato ingresado o intentá buscar por nombre, marca,
+              modelo o característica técnica.
+            </p>
           </div>
         )}
 
@@ -157,8 +164,8 @@ export default function Home() {
       </section>
 
       <footer>
-        Información regulatoria de productos con radiofrecuencia comercializados
-        en Chile.
+        Información técnica y documentación de equipos de radiofrecuencia
+        comercializados en Chile.
       </footer>
     </main>
   );
