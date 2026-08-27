@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 
 type Producto = {
-  codigo: string;
   nombre: string;
   marca: string;
   modelo: string;
@@ -23,15 +22,18 @@ export default function BuscadorProductos({
   const [busqueda, setBusqueda] = useState("");
 
   const resultados = useMemo(() => {
-    const texto = busqueda.trim().toLowerCase();
+
+    const texto = busqueda
+      .trim()
+      .toLowerCase();
 
     if (!texto) {
       return [];
     }
 
     return productos.filter((producto) => {
+
       const contenido = [
-        producto.codigo,
         producto.nombre,
         producto.marca,
         producto.modelo,
@@ -46,15 +48,23 @@ export default function BuscadorProductos({
         .toLowerCase();
 
       return contenido.includes(texto);
+
     });
+
   }, [busqueda, productos]);
+
 
   return (
     <>
       <section className="hero">
-        <p className="eyebrow">RADIOFRECUENCIA</p>
 
-        <h1>Consulta de equipos</h1>
+        <p className="eyebrow">
+          RADIOFRECUENCIA
+        </p>
+
+        <h1>
+          Consulta de equipos
+        </h1>
 
         <p className="intro">
           Buscá un equipo por nombre, marca, modelo, tipo o características
@@ -62,7 +72,10 @@ export default function BuscadorProductos({
         </p>
 
         <div className="searchBox">
-          <span className="searchIcon">⌕</span>
+
+          <span className="searchIcon">
+            ⌕
+          </span>
 
           <input
             type="search"
@@ -72,45 +85,69 @@ export default function BuscadorProductos({
             aria-label="Buscar equipo"
             autoComplete="off"
           />
+
         </div>
 
         <p className="help">
           Podés ingresar el modelo completo o solamente una parte.
         </p>
+
       </section>
 
+
       <section className="results">
+
         {busqueda && resultados.length === 0 && (
+
           <div className="empty">
-            <h2>No encontramos ese equipo</h2>
+
+            <h2>
+              No encontramos ese equipo
+            </h2>
+
             <p>
-              Verificá el dato ingresado o intentá buscar por nombre, marca,
-              modelo o característica técnica.
+              Verificá el dato ingresado o intentá buscar por nombre,
+              marca, modelo o característica técnica.
             </p>
+
           </div>
+
         )}
 
-        {resultados.map((producto) => (
-          <article className="productCard" key={producto.codigo}>
-            <div>
-              <span className="tag">{producto.tipo_equipo}</span>
 
-              <h2>{producto.nombre}</h2>
+        {resultados.map((producto) => (
+
+          <article
+            className="productCard"
+            key={producto.modelo}
+          >
+
+            <div>
+
+              <span className="tag">
+                {producto.tipo_equipo}
+              </span>
+
+              <h2>
+                {producto.nombre}
+              </h2>
 
               <div className="productInfo">
+
                 <span>
-                  <strong>Marca:</strong> {producto.marca}
+                  <strong>Marca:</strong>{" "}
+                  {producto.marca}
                 </span>
 
                 <span>
-                  <strong>Modelo:</strong> {producto.modelo}
+                  <strong>Modelo:</strong>{" "}
+                  {producto.modelo}
                 </span>
 
-                <span>
-                  <strong>Código:</strong> {producto.codigo}
-                </span>
               </div>
+
             </div>
+
 
             <a
               className="button"
@@ -118,8 +155,11 @@ export default function BuscadorProductos({
             >
               Ver información
             </a>
+
           </article>
+
         ))}
+
       </section>
     </>
   );
